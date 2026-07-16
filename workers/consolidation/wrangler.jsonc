@@ -1,0 +1,94 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "deeprecall-consolidation",
+  // Account is taken from `wrangler login` or the CLOUDFLARE_ACCOUNT_ID env var.
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "upload_source_maps": true,
+  // Internal worker — no public URL, even on a bare (non --env) deploy.
+  "workers_dev": false,
+  "preview_urls": false,
+
+  // === Dev Environment ===
+  "env": {
+    "dev": {
+      "name": "deeprecall-consolidation-dev",
+      // Internal worker: driven by queue + cron only. No public URL.
+      "workers_dev": false,
+      "preview_urls": false,
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": {
+        "AXIOM_DATASET": "deeprecall-dev",
+        "ANTHROPIC_PROVIDER": "bedrock",
+        "AWS_REGION": "us-east-1",
+      },
+      "kv_namespaces": [
+        {
+          "binding": "CONFIG",
+          "id": "<KV_NAMESPACE_ID_DEV>",
+        },
+      ],
+      "services": [
+        {
+          "binding": "DATA",
+          "service": "deeprecall-data-dev",
+          "entrypoint": "DataService",
+        },
+      ],
+      "queues": {
+        "consumers": [
+          {
+            "queue": "deeprecall-consolidation-queue-dev",
+            "max_batch_size": 10,
+            "max_batch_timeout": 30,
+            "max_retries": 3,
+            "retry_delay": 10,
+          },
+        ],
+      },
+      "triggers": {
+        "crons": ["0 3 * * *", "0 4 * * SUN"],
+      },
+    },
+    "production": {
+      "name": "deeprecall-consolidation-prod",
+      // Internal worker: driven by queue + cron only. No public URL.
+      "workers_dev": false,
+      "preview_urls": false,
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": {
+        "AXIOM_DATASET": "deeprecall-prod",
+        "ANTHROPIC_PROVIDER": "bedrock",
+        "AWS_REGION": "us-east-1",
+      },
+      "kv_namespaces": [
+        {
+          "binding": "CONFIG",
+          "id": "<KV_NAMESPACE_ID_PROD>",
+        },
+      ],
+      "services": [
+        {
+          "binding": "DATA",
+          "service": "deeprecall-data-prod",
+          "entrypoint": "DataService",
+        },
+      ],
+      "queues": {
+        "consumers": [
+          {
+            "queue": "deeprecall-consolidation-queue-prod",
+            "max_batch_size": 10,
+            "max_batch_timeout": 30,
+            "max_retries": 3,
+            "retry_delay": 10,
+          },
+        ],
+      },
+      "triggers": {
+        "crons": ["0 3 * * *", "0 4 * * SUN"],
+      },
+    },
+  },
+}

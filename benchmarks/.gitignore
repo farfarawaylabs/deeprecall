@@ -1,0 +1,13 @@
+# dataset is CC BY-NC 4.0 — fetched locally, never committed
+locomo/data/locomo10.json
+
+# derived result artifacts embed the dataset's questions + gold answers verbatim,
+# so they inherit the CC BY-NC 4.0 restriction — keep them local, never commit.
+# RESULTS.md (aggregate scores only) is intentionally NOT ignored.
+locomo/results/*.json
+
+# transient run state
+locomo/results/.run_started_at_*
+*.log
+__pycache__/
+.venv/

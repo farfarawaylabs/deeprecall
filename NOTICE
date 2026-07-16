@@ -1,0 +1,36 @@
+Deep Recall
+Copyright 2026 FarFarAway Labs
+
+This product is licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this software except in compliance with the
+License. You may obtain a copy of the License in the LICENSE file at the root
+of this repository, or at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+
+--------------------------------------------------------------------------------
+Third-party notices
+--------------------------------------------------------------------------------
+
+LoCoMo benchmark (snap-research/locomo)
+  https://github.com/snap-research/locomo — licensed CC BY-NC 4.0.
+
+  The benchmark harness under benchmarks/locomo/ reproduces evaluation code and
+  questioning prompts from this project for non-commercial benchmark
+  reproduction only:
+    - benchmarks/locomo/harness/score.py — the official token-F1 functions
+      (normalize_answer, f1_score, f1, official_score) are ported verbatim from
+      task_eval/evaluation.py.
+    - benchmarks/locomo/harness/answer.py — the official questioning prompts are
+      reproduced verbatim from task_eval/gpt_utils.py and claude_utils.py.
+
+  This CC BY-NC 4.0 material is NOT covered by the Apache License, Version 2.0
+  that governs the rest of this repository. The LoCoMo dataset itself is not
+  distributed here; it is fetched locally at benchmark time (see
+  benchmarks/README.md).

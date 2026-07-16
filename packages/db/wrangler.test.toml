@@ -1,0 +1,14 @@
+# Wrangler config for local D1 testing only.
+# Not deployed — used by @cloudflare/vitest-pool-workers.
+name = "deeprecall-db-test"
+compatibility_date = "2026-03-10"
+compatibility_flags = ["nodejs_compat"]
+
+# Minimal entrypoint required by wrangler config validation
+main = "src/index.ts"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "deeprecall-db-test"
+database_id = "test-db-id"
+migrations_dir = "src/migrations"

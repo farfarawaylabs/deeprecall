@@ -1,0 +1,96 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "deeprecall-ingestion",
+  // Account is taken from `wrangler login` or the CLOUDFLARE_ACCOUNT_ID env var.
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "upload_source_maps": true,
+  // Internal worker — no public URL, even on a bare (non --env) deploy.
+  "workers_dev": false,
+  "preview_urls": false,
+
+  // === Dev Environment ===
+  "env": {
+    "dev": {
+      "name": "deeprecall-ingestion-dev",
+      // Internal worker: reachable only via service bindings. No public URL.
+      "workers_dev": false,
+      "preview_urls": false,
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": {
+        "AXIOM_DATASET": "deeprecall-dev",
+        "ANTHROPIC_PROVIDER": "bedrock",
+        "AWS_REGION": "us-east-1",
+      },
+      "kv_namespaces": [
+        {
+          "binding": "CONFIG",
+          "id": "<KV_NAMESPACE_ID_DEV>",
+        },
+      ],
+      "services": [
+        {
+          "binding": "DATA",
+          "service": "deeprecall-data-dev",
+          "entrypoint": "DataService",
+        },
+      ],
+      "workflows": [
+        {
+          "binding": "INGESTION_WORKFLOW",
+          "name": "deeprecall-ingestion-workflow-dev",
+          "class_name": "IngestionWorkflow",
+        },
+      ],
+      "queues": {
+        "producers": [
+          {
+            "binding": "CONSOLIDATION_QUEUE",
+            "queue": "deeprecall-consolidation-queue-dev",
+          },
+        ],
+      },
+    },
+    "production": {
+      "name": "deeprecall-ingestion-prod",
+      // Internal worker: reachable only via service bindings. No public URL.
+      "workers_dev": false,
+      "preview_urls": false,
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": {
+        "AXIOM_DATASET": "deeprecall-prod",
+        "ANTHROPIC_PROVIDER": "bedrock",
+        "AWS_REGION": "us-east-1",
+      },
+      "kv_namespaces": [
+        {
+          "binding": "CONFIG",
+          "id": "<KV_NAMESPACE_ID_PROD>",
+        },
+      ],
+      "services": [
+        {
+          "binding": "DATA",
+          "service": "deeprecall-data-prod",
+          "entrypoint": "DataService",
+        },
+      ],
+      "workflows": [
+        {
+          "binding": "INGESTION_WORKFLOW",
+          "name": "deeprecall-ingestion-workflow-prod",
+          "class_name": "IngestionWorkflow",
+        },
+      ],
+      "queues": {
+        "producers": [
+          {
+            "binding": "CONSOLIDATION_QUEUE",
+            "queue": "deeprecall-consolidation-queue-prod",
+          },
+        ],
+      },
+    },
+  },
+}

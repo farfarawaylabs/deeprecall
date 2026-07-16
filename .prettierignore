@@ -1,0 +1,9 @@
+node_modules
+dist
+.wrangler
+.turbo
+coverage
+pnpm-lock.yaml
+benchmarks/.venv
+benchmarks/locomo/data/locomo10.json
+benchmarks/locomo/results/*.json

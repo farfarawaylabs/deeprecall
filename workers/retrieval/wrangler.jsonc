@@ -1,0 +1,46 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "deeprecall-retrieval",
+  // Account is taken from `wrangler login` or the CLOUDFLARE_ACCOUNT_ID env var.
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "upload_source_maps": true,
+  // Internal worker — no public URL, even on a bare (non --env) deploy.
+  "workers_dev": false,
+  "preview_urls": false,
+
+  // === Dev Environment ===
+  "env": {
+    "dev": {
+      "name": "deeprecall-retrieval-dev",
+      // Internal worker: reachable only via service bindings. No public URL.
+      "workers_dev": false,
+      "preview_urls": false,
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": { "AXIOM_DATASET": "deeprecall-dev" },
+      "services": [
+        {
+          "binding": "DATA",
+          "service": "deeprecall-data-dev",
+          "entrypoint": "DataService",
+        },
+      ],
+    },
+    "production": {
+      "name": "deeprecall-retrieval-prod",
+      // Internal worker: reachable only via service bindings. No public URL.
+      "workers_dev": false,
+      "preview_urls": false,
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": { "AXIOM_DATASET": "deeprecall-prod" },
+      "services": [
+        {
+          "binding": "DATA",
+          "service": "deeprecall-data-prod",
+          "entrypoint": "DataService",
+        },
+      ],
+    },
+  },
+}

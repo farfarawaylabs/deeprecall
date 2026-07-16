@@ -1,0 +1,6 @@
+# Copy this to .dev.vars and fill in values
+CLOUDFLARE_API_TOKEN=your-cloudflare-api-token
+CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+AXIOM_API_TOKEN=your-axiom-token
+AXIOM_DATASET=deeprecall-dev
+ADMIN_KEY=your-admin-key

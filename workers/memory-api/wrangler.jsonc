@@ -1,0 +1,91 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "deeprecall-memory-api",
+  // Account is taken from `wrangler login` or the CLOUDFLARE_ACCOUNT_ID env var.
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "upload_source_maps": true,
+
+  // === Dev Environment ===
+  "env": {
+    "dev": {
+      "name": "deeprecall-memory-api-dev",
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": {
+        "AXIOM_DATASET": "deeprecall-dev",
+        "ANSWER_MODEL": "anthropic:claude-sonnet-5",
+        "ANTHROPIC_PROVIDER": "bedrock",
+        "AWS_REGION": "us-east-1",
+      },
+      "kv_namespaces": [
+        {
+          "binding": "CONFIG",
+          "id": "<KV_NAMESPACE_ID_DEV>",
+        },
+      ],
+      "services": [
+        {
+          "binding": "INGESTION",
+          "service": "deeprecall-ingestion-dev",
+        },
+        {
+          "binding": "RETRIEVAL",
+          "service": "deeprecall-retrieval-dev",
+        },
+        {
+          "binding": "DATA",
+          "service": "deeprecall-data-dev",
+          "entrypoint": "DataService",
+        },
+      ],
+      "queues": {
+        "producers": [
+          {
+            "binding": "CONSOLIDATION_QUEUE",
+            "queue": "deeprecall-consolidation-queue-dev",
+          },
+        ],
+      },
+    },
+    "production": {
+      "name": "deeprecall-memory-api-prod",
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": {
+        "AXIOM_DATASET": "deeprecall-prod",
+        "ANSWER_MODEL": "anthropic:claude-sonnet-5",
+        "ANTHROPIC_PROVIDER": "bedrock",
+        "AWS_REGION": "us-east-1",
+      },
+      "kv_namespaces": [
+        {
+          "binding": "CONFIG",
+          "id": "<KV_NAMESPACE_ID_PROD>",
+        },
+      ],
+      "services": [
+        {
+          "binding": "INGESTION",
+          "service": "deeprecall-ingestion-prod",
+        },
+        {
+          "binding": "RETRIEVAL",
+          "service": "deeprecall-retrieval-prod",
+        },
+        {
+          "binding": "DATA",
+          "service": "deeprecall-data-prod",
+          "entrypoint": "DataService",
+        },
+      ],
+      "queues": {
+        "producers": [
+          {
+            "binding": "CONSOLIDATION_QUEUE",
+            "queue": "deeprecall-consolidation-queue-prod",
+          },
+        ],
+      },
+    },
+  },
+}

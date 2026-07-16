@@ -1,0 +1,96 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "deeprecall-data",
+  // Account is taken from `wrangler login` or the CLOUDFLARE_ACCOUNT_ID env var.
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "upload_source_maps": true,
+  // Internal worker — no public URL, even on a bare (non --env) deploy.
+  "workers_dev": false,
+  "preview_urls": false,
+
+  // Data worker: central data access layer for all storage bindings.
+  // Other workers bind to this via Service Bindings + RPC.
+  //
+  // Fill in the <PLACEHOLDER> ids with the output of the resource-creation
+  // commands in docs/DEPLOYMENT.md. Each additional product onboarded via the
+  // management API adds a DB_<slug> + VEC_<slug> binding pair here (the
+  // onboarding response includes the snippet).
+  "env": {
+    "dev": {
+      "name": "deeprecall-data-dev",
+      // Internal worker: reachable only via service bindings (RPC). No public URL.
+      "workers_dev": false,
+      "preview_urls": false,
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": { "AXIOM_DATASET": "deeprecall-dev" },
+      "d1_databases": [
+        {
+          "binding": "DB_default",
+          "database_name": "deeprecall-db-default-dev",
+          "database_id": "<D1_DATABASE_ID_DEV>",
+          "migrations_dir": "../../packages/db/src/migrations",
+        },
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "CONFIG",
+          "id": "<KV_NAMESPACE_ID_DEV>",
+        },
+      ],
+      "vectorize": [
+        {
+          "binding": "VEC_default",
+          "index_name": "deeprecall-vectors-default-dev",
+        },
+      ],
+      "r2_buckets": [
+        {
+          "binding": "DOCUMENTS_BUCKET",
+          "bucket_name": "deeprecall-documents-dev",
+        },
+      ],
+      "ai": {
+        "binding": "AI",
+      },
+    },
+    "production": {
+      "name": "deeprecall-data-prod",
+      // Internal worker: reachable only via service bindings (RPC). No public URL.
+      "workers_dev": false,
+      "preview_urls": false,
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": { "AXIOM_DATASET": "deeprecall-prod" },
+      "d1_databases": [
+        {
+          "binding": "DB_default",
+          "database_name": "deeprecall-db-default-prod",
+          "database_id": "<D1_DATABASE_ID_PROD>",
+          "migrations_dir": "../../packages/db/src/migrations",
+        },
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "CONFIG",
+          "id": "<KV_NAMESPACE_ID_PROD>",
+        },
+      ],
+      "vectorize": [
+        {
+          "binding": "VEC_default",
+          "index_name": "deeprecall-vectors-default-prod",
+        },
+      ],
+      "r2_buckets": [
+        {
+          "binding": "DOCUMENTS_BUCKET",
+          "bucket_name": "deeprecall-documents-prod",
+        },
+      ],
+      "ai": {
+        "binding": "AI",
+      },
+    },
+  },
+}

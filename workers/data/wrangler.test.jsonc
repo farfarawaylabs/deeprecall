@@ -1,0 +1,36 @@
+{
+  // Wrangler config for local testing only — not deployed.
+  // Used by @cloudflare/vitest-pool-workers (see vitest.config.mts).
+  // Vectorize and AI bindings are deliberately absent: miniflare has no
+  // local simulator for either (both are remote-proxy only), so tests
+  // inject stubs for them via direct DataService construction instead.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "deeprecall-data-test",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB_default",
+      "database_name": "deeprecall-db-test",
+      "database_id": "test-db-id",
+      "migrations_dir": "../../packages/db/src/migrations",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "DOCUMENTS_BUCKET",
+      "bucket_name": "deeprecall-documents-test",
+    },
+  ],
+  // Self-service binding: lets tests call DataService methods over real RPC
+  // (the same path production workers use), catching serialization issues
+  // that direct method calls would miss.
+  "services": [
+    {
+      "binding": "DATA",
+      "service": "deeprecall-data-test",
+      "entrypoint": "DataService",
+    },
+  ],
+}

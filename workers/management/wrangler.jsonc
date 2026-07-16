@@ -1,0 +1,48 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "deeprecall-management",
+  // Account is taken from `wrangler login` or the CLOUDFLARE_ACCOUNT_ID env var.
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "upload_source_maps": true,
+
+  "env": {
+    "dev": {
+      "name": "deeprecall-management-dev",
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": { "AXIOM_DATASET": "deeprecall-dev", "ENVIRONMENT": "dev" },
+      "kv_namespaces": [
+        {
+          "binding": "CONFIG",
+          "id": "<KV_NAMESPACE_ID_DEV>",
+        },
+      ],
+      "services": [
+        {
+          "binding": "DATA",
+          "service": "deeprecall-data-dev",
+          "entrypoint": "DataService",
+        },
+      ],
+    },
+    "production": {
+      "name": "deeprecall-management-prod",
+      "observability": { "enabled": true, "logs": { "enabled": true } },
+      "vars": { "AXIOM_DATASET": "deeprecall-prod", "ENVIRONMENT": "prod" },
+      "kv_namespaces": [
+        {
+          "binding": "CONFIG",
+          "id": "<KV_NAMESPACE_ID_PROD>",
+        },
+      ],
+      "services": [
+        {
+          "binding": "DATA",
+          "service": "deeprecall-data-prod",
+          "entrypoint": "DataService",
+        },
+      ],
+    },
+  },
+}

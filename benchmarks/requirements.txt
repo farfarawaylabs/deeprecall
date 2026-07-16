@@ -1,0 +1,5 @@
+requests>=2.31
+anthropic>=0.40
+nltk>=3.8
+numpy>=1.26
+regex>=2023.0

@@ -1,0 +1,7 @@
+# Copy this to .dev.vars and fill in values
+ANTHROPIC_API_KEY=your-anthropic-api-key
+AXIOM_API_TOKEN=your-axiom-token
+AXIOM_DATASET=deeprecall-dev
+# Shared secret authenticating memory-api -> ingestion/retrieval service-binding
+# calls. Must be IDENTICAL across memory-api, ingestion, and retrieval.
+INTERNAL_SERVICE_KEY=dev-internal-service-key
