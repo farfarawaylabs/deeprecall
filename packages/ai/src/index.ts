@@ -6,7 +6,12 @@ export { consolidateProfile } from './profile-consolidation';
 export { generateAnswer } from './answer';
 export type { AnswerConfig, AnswerResult } from './answer';
 export { resolveModel, parseModelSpec } from './provider';
-export { createClaudeModel, claudeConfigFromEnv, toBedrockModelId } from './claude';
+export {
+  CLAUDE_MAX_OUTPUT_TOKENS,
+  createClaudeModel,
+  claudeConfigFromEnv,
+  toBedrockModelId,
+} from './claude';
 export type { ClaudeConfig, ClaudeProvider, ClaudeEnv } from './claude';
 export type { ProviderName, ProviderKeys } from './provider';
 export { CHAT_EXTRACTION_TEMPLATE } from './prompts/chat-extraction';

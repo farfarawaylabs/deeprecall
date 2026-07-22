@@ -1,5 +1,5 @@
 import { generateText, Output } from 'ai';
-import { createClaudeModel, type ClaudeConfig } from './claude';
+import { CLAUDE_MAX_OUTPUT_TOKENS, createClaudeModel, type ClaudeConfig } from './claude';
 import { z } from 'zod';
 import type { Memory, MemoryCandidate } from '@deeprecall/types';
 import { RECONCILIATION_PROMPT } from './prompts/reconciliation';
@@ -97,6 +97,7 @@ export async function reconcileCandidate(
     model,
     output: Output.object({ schema: ReconciliationDecisionSchema }),
     prompt,
+    maxOutputTokens: CLAUDE_MAX_OUTPUT_TOKENS,
   });
 
   return output;

@@ -2,7 +2,7 @@ import { generateText, Output } from 'ai';
 import { z } from 'zod';
 import { MemoryCandidate } from '@deeprecall/types';
 import type { ExtractionConfig } from './types';
-import { createClaudeModel } from './claude';
+import { CLAUDE_MAX_OUTPUT_TOKENS, createClaudeModel } from './claude';
 import { CHAT_EXTRACTION_TEMPLATE } from './prompts/chat-extraction';
 
 const DEFAULT_MODEL = 'claude-sonnet-5';
@@ -55,6 +55,7 @@ export async function extractMemories(
     model,
     output: Output.object({ schema: ExtractionResult }),
     prompt,
+    maxOutputTokens: CLAUDE_MAX_OUTPUT_TOKENS,
   });
 
   return output.memories;

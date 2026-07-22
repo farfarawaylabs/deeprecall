@@ -12,6 +12,7 @@ vi.mock('@ai-sdk/anthropic', () => ({
 import { generateText } from 'ai';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { consolidateProfile } from '../profile-consolidation';
+import { CLAUDE_MAX_OUTPUT_TOKENS } from '../claude';
 import type { ProfileConsolidationConfig } from '../profile-consolidation';
 
 const mockGenerateText = vi.mocked(generateText);
@@ -56,6 +57,16 @@ describe('consolidateProfile', () => {
     mockCreateAnthropic.mockReturnValue(
       vi.fn(() => 'mock-model') as ReturnType<typeof createAnthropic>,
     );
+  });
+
+  it('passes the Claude output-token ceiling so adaptive thinking cannot starve the summary', async () => {
+    mockGenerateText.mockResolvedValueOnce({ text: 'profile' } as never);
+
+    await consolidateProfile([makeFact()], config);
+
+    expect(mockGenerateText.mock.calls[0][0]).toMatchObject({
+      maxOutputTokens: CLAUDE_MAX_OUTPUT_TOKENS,
+    });
   });
 
   it('returns consolidated profile text', async () => {

@@ -15,6 +15,7 @@ vi.mock('@ai-sdk/anthropic', () => ({
 import { generateText } from 'ai';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { reconcileCandidate } from '../reconciliation';
+import { CLAUDE_MAX_OUTPUT_TOKENS } from '../claude';
 import type {
   SimilarMemory,
   ReconciliationConfig,
@@ -88,6 +89,23 @@ describe('reconcileCandidate', () => {
     expect(result.existing_memory_id).toBeNull();
     expect(result.merged_content).toBeNull();
     expect(mockGenerateText).not.toHaveBeenCalled();
+  });
+
+  it('passes the Claude output-token ceiling so adaptive thinking cannot starve structured output', async () => {
+    mockGenerateText.mockResolvedValueOnce({
+      output: {
+        action: 'skip',
+        reason: 'duplicate',
+        existing_memory_id: null,
+        merged_content: null,
+      },
+    } as never);
+
+    await reconcileCandidate(candidate, [{ memory: makeMemory(), score: 0.85 }], config);
+
+    expect(mockGenerateText.mock.calls[0][0]).toMatchObject({
+      maxOutputTokens: CLAUDE_MAX_OUTPUT_TOKENS,
+    });
   });
 
   it('calls LLM when similar memories exist', async () => {

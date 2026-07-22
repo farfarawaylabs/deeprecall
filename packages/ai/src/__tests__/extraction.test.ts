@@ -18,6 +18,7 @@ vi.mock('@ai-sdk/anthropic', () => ({
 import { generateText } from 'ai';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { extractMemories } from '../extraction';
+import { CLAUDE_MAX_OUTPUT_TOKENS } from '../claude';
 
 const mockGenerateText = vi.mocked(generateText);
 const mockCreateAnthropic = vi.mocked(createAnthropic);
@@ -61,6 +62,18 @@ describe('extractMemories', () => {
     expect(result[0].content).toBe('User prefers TypeScript over JavaScript');
     expect(result[0].type).toBe('fact');
     expect(result[0].source_type).toBe('user_stated');
+  });
+
+  it('passes the Claude output-token ceiling so adaptive thinking cannot starve structured output', async () => {
+    mockGenerateText.mockResolvedValueOnce({
+      output: { memories: [] },
+    } as never);
+
+    await extractMemories('test content', baseConfig);
+
+    expect(mockGenerateText.mock.calls[0][0]).toMatchObject({
+      maxOutputTokens: CLAUDE_MAX_OUTPUT_TOKENS,
+    });
   });
 
   it('creates Anthropic provider with the API key', async () => {

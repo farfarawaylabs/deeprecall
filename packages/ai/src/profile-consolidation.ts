@@ -1,5 +1,5 @@
 import { generateText } from 'ai';
-import { createClaudeModel, type ClaudeConfig } from './claude';
+import { CLAUDE_MAX_OUTPUT_TOKENS, createClaudeModel, type ClaudeConfig } from './claude';
 import type { Memory } from '@deeprecall/types';
 
 const DEFAULT_MODEL = 'claude-sonnet-5';
@@ -48,6 +48,7 @@ export async function consolidateProfile(
   const result = await generateText({
     model,
     prompt,
+    maxOutputTokens: CLAUDE_MAX_OUTPUT_TOKENS,
   });
 
   return result.text;

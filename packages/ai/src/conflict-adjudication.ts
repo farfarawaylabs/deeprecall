@@ -1,5 +1,5 @@
 import { generateText, Output } from 'ai';
-import { createClaudeModel, type ClaudeConfig } from './claude';
+import { CLAUDE_MAX_OUTPUT_TOKENS, createClaudeModel, type ClaudeConfig } from './claude';
 import { z } from 'zod';
 import type { Memory } from '@deeprecall/types';
 import { CONFLICT_ADJUDICATION_PROMPT } from './prompts/conflict-adjudication';
@@ -66,6 +66,7 @@ export async function adjudicateConflict(
     model,
     output: Output.object({ schema: ConflictAdjudicationSchema }),
     prompt,
+    maxOutputTokens: CLAUDE_MAX_OUTPUT_TOKENS,
   });
 
   return output;

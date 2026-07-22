@@ -1,5 +1,6 @@
 import type { AnswerRequest, AnswerResponse, QueryResponse } from '@deeprecall/types';
 import {
+  CLAUDE_MAX_OUTPUT_TOKENS,
   generateAnswer,
   parseModelSpec,
   claudeConfigFromEnv,
@@ -24,9 +25,11 @@ const DEFAULT_ANSWER_MODEL = 'anthropic:claude-sonnet-5';
  * simply avoids truncating the rare long answer. Valid for every Anthropic answer
  * model (Haiku 4.5 = 64K output, Opus/Sonnet = 128K). Applied to Anthropic only —
  * OpenAI/Google have no default thinking and lower output caps, so they use their
- * own in-range provider default instead (a fixed 64000 would exceed some of them).
+ * own in-range provider default instead (a fixed value would exceed some of them).
+ * Shares CLAUDE_MAX_OUTPUT_TOKENS with the internal pipeline calls so the two
+ * ceilings cannot drift.
  */
-const DEFAULT_ANSWER_MAX_TOKENS = 64000;
+const DEFAULT_ANSWER_MAX_TOKENS = CLAUDE_MAX_OUTPUT_TOKENS;
 
 export interface AnswerContext {
   env: Env;
@@ -137,7 +140,7 @@ export async function answerQuestion(
   try {
     // Apply the generous default only to Anthropic (thinking-by-default shares
     // the budget). Other providers use their own in-range default via undefined,
-    // since a fixed 64000 exceeds some OpenAI/Google models' output caps.
+    // since a fixed high ceiling exceeds some OpenAI/Google models' output caps.
     const { provider } = parseModelSpec(model);
     const maxOutputTokens =
       req.max_tokens ?? (provider === 'anthropic' ? DEFAULT_ANSWER_MAX_TOKENS : undefined);

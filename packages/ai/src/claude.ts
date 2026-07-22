@@ -24,6 +24,20 @@ interface BedrockCredentials {
   modelIdOverrides?: Record<string, string>;
 }
 
+/**
+ * Output-token ceiling for internal Claude calls (extraction, reconciliation,
+ * adjudication, consolidation). Claude Sonnet 5 runs adaptive thinking by
+ * default and thinking tokens share the output budget; without an explicit
+ * ceiling the provider default (~4k) can be consumed by thinking before the
+ * structured output is emitted, surfacing as AI_NoOutputGeneratedError on
+ * dense inputs. 64000 mirrors the /v1/answer Anthropic default — generous
+ * headroom for thinking plus large structured outputs, within Sonnet 5's
+ * 128k output cap. Note: pinning a per-call model (config.model or
+ * BEDROCK_MODEL_OVERRIDES) with an output cap below this value makes the
+ * provider reject every request — keep overrides on models with >= 64k output.
+ */
+export const CLAUDE_MAX_OUTPUT_TOKENS = 64000;
+
 /** Runtime configuration for instantiating Claude models. */
 export interface ClaudeConfig {
   /** Defaults to "bedrock". */
